@@ -1,8 +1,8 @@
 #! /bin/sh
 
-USER_PROPERTIES="user.properties"
-TEST_PLAN_PATH="2. QRC"
-TEST_PLAN="2. QRC.jmx"
+USER_PROPERTIES="../../user-dev.properties"
+TEST_PLAN_PATH="."
+TEST_PLAN="Expert Configuration.jmx"
 SOURCE=$(dirname "$0")
 
 export JVM_ARGS=--add-opens=java.base/java.nio=ALL-UNNAMED

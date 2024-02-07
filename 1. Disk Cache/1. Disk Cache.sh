@@ -1,8 +1,8 @@
 #! /bin/sh
 
-USER_PROPERTIES="user.properties"
-TEST_PLAN_PATH="3. Serverless QRC"
-TEST_PLAN="3. Serverless QRC.jmx"
+USER_PROPERTIES="../user.properties"
+TEST_PLAN_PATH="."
+TEST_PLAN="1. Disk Cache.jmx"
 SOURCE=$(dirname "$0")
 
 export JVM_ARGS=--add-opens=java.base/java.nio=ALL-UNNAMED

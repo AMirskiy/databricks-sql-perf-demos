@@ -10,12 +10,12 @@
           <elementProp name="HostName" elementType="Argument">
             <stringProp name="Argument.name">HostName</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
-            <stringProp name="Argument.value">${__P(HostName,adb-2219810816778143.3.azuredatabricks.net)}</stringProp>
+            <stringProp name="Argument.value">${__P(HostName,)}</stringProp>
           </elementProp>
           <elementProp name="HttpPath" elementType="Argument">
             <stringProp name="Argument.name">HttpPath</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
-            <stringProp name="Argument.value">${__P(HttpPath,/sql/1.0/warehouses/a5ad4687dadae274)}</stringProp>
+            <stringProp name="Argument.value">${__P(HttpPath,)}</stringProp>
           </elementProp>
           <elementProp name="Catalog" elementType="Argument">
             <stringProp name="Argument.name">Catalog</stringProp>
@@ -44,7 +44,7 @@
           </elementProp>
           <elementProp name="token" elementType="Argument">
             <stringProp name="Argument.name">token</stringProp>
-            <stringProp name="Argument.value">${__P(token,replace_with_actual_PAT)}</stringProp>
+            <stringProp name="Argument.value">${__P(token,)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
