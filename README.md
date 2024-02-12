@@ -27,7 +27,7 @@ brew install jmeter
 ```
 
 ## Configuration
-In order to configure JMeter test plans to use your Databricks environment adjust **user.properties** file by providing correct values for the following properties. The values can be found in **Connection details** of Databricks SQL Warehouse in your environment.
+In order to configure JMeter test plans to use your Databricks environment adjust [user.properties](user.properties) file by providing correct values for the following properties. The values can be found in **Connection details** of Databricks SQL Warehouse in your environment.
 - **HostName** - the host name of Databricks SQL Warehouse, e.g. _adb-0123456789.0.azuredatabricks.net_
 - **HttpPath** - the http path of Databricks SQL Warehouse, e.g. _/sql/1.0/warehouses/abcdefghijk_
 - **WarehouseID** - (optional) the ID of Databricks SQL Warehouse, i.e. the string after _/sql/1.0/warehouses/_ in **HttpPath**.
