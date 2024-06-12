@@ -2,7 +2,7 @@
 
 USER_PROPERTIES="../user.properties"
 TEST_PLAN_PATH="."
-TEST_PLAN="5. Join Optimization.jmx"
+TEST_PLAN="5. Query optimization using PK.jmx"
 SOURCE=$(dirname "$0")
 
 export JVM_ARGS=--add-opens=java.base/java.nio=ALL-UNNAMED

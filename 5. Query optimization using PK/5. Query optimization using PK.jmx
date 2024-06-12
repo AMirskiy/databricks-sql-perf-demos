@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Join Optimization">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Query optimization using PK constraints">
       <boolProp name="TestPlan.serialize_threadgroups">true</boolProp>
       <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
@@ -18,7 +18,7 @@
           </elementProp>
           <elementProp name="Catalog" elementType="Argument">
             <stringProp name="Argument.name">Catalog</stringProp>
-            <stringProp name="Argument.value">${__P(Catalog,samples)}</stringProp>
+            <stringProp name="Argument.value">${__P(Catalog,join_optimization)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="Schema" elementType="Argument">
@@ -38,22 +38,12 @@
           </elementProp>
           <elementProp name="LoopCount" elementType="Argument">
             <stringProp name="Argument.name">LoopCount</stringProp>
-            <stringProp name="Argument.value">10</stringProp>
+            <stringProp name="Argument.value">100</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="NumThreads" elementType="Argument">
             <stringProp name="Argument.name">NumThreads</stringProp>
             <stringProp name="Argument.value">10</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="CatalogName" elementType="Argument">
-            <stringProp name="Argument.name">CatalogName</stringProp>
-            <stringProp name="Argument.value">join_optimization</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="SchemaName" elementType="Argument">
-            <stringProp name="Argument.name">SchemaName</stringProp>
-            <stringProp name="Argument.value">tpch</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -92,10 +82,10 @@
         </elementProp>
       </SetupThreadGroup>
       <hashTree>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Drop test dataset">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Drop test dataset" enabled="false">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">DROP CATALOG IF EXISTS ${CatalogName} CASCADE;
+          <stringProp name="query">DROP CATALOG IF EXISTS ${Catalog} CASCADE;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -109,7 +99,7 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create catalog">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">CREATE CATALOG IF NOT EXISTS ${CatalogName};
+          <stringProp name="query">CREATE CATALOG IF NOT EXISTS ${Catalog};
 
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
@@ -124,7 +114,7 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create schema">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">CREATE SCHEMA IF NOT EXISTS ${CatalogName}.${SchemaName};
+          <stringProp name="query">CREATE SCHEMA IF NOT EXISTS ${Catalog}.${Schema};
 
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
@@ -139,7 +129,7 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create test table - lineitem">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">CREATE TABLE IF NOT EXISTS ${CatalogName}.${SchemaName}.lineitem AS SELECT * FROM samples.tpch.lineitem;
+          <stringProp name="query">CREATE TABLE IF NOT EXISTS ${Catalog}.${Schema}.lineitem AS SELECT * FROM samples.tpch.lineitem;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -153,7 +143,7 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create test table - orders">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">CREATE TABLE IF NOT EXISTS ${CatalogName}.${SchemaName}.orders AS SELECT * FROM samples.tpch.orders;
+          <stringProp name="query">CREATE TABLE IF NOT EXISTS ${Catalog}.${Schema}.orders AS SELECT * FROM samples.tpch.orders;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -167,7 +157,7 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create test table - part">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">CREATE TABLE IF NOT EXISTS ${CatalogName}.${SchemaName}.part AS SELECT * FROM samples.tpch.part;
+          <stringProp name="query">CREATE TABLE IF NOT EXISTS ${Catalog}.${Schema}.part AS SELECT * FROM samples.tpch.part;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -181,7 +171,7 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create test table - supplier">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">CREATE TABLE IF NOT EXISTS ${CatalogName}.${SchemaName}.supplier AS SELECT * FROM samples.tpch.supplier;</stringProp>
+          <stringProp name="query">CREATE TABLE IF NOT EXISTS ${Catalog}.${Schema}.supplier AS SELECT * FROM samples.tpch.supplier;</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
           <stringProp name="variableNames"></stringProp>
@@ -194,7 +184,7 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create test table - customer">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">CREATE TABLE IF NOT EXISTS ${CatalogName}.${SchemaName}.customer AS SELECT * FROM samples.tpch.customer;</stringProp>
+          <stringProp name="query">CREATE TABLE IF NOT EXISTS ${Catalog}.${Schema}.customer AS SELECT * FROM samples.tpch.customer;</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
           <stringProp name="variableNames"></stringProp>
@@ -207,7 +197,7 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create test table - region">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">CREATE TABLE IF NOT EXISTS ${CatalogName}.${SchemaName}.region AS SELECT * FROM samples.tpch.region;</stringProp>
+          <stringProp name="query">CREATE TABLE IF NOT EXISTS ${Catalog}.${Schema}.region AS SELECT * FROM samples.tpch.region;</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
           <stringProp name="variableNames"></stringProp>
@@ -220,7 +210,7 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create test table - nation">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">CREATE TABLE IF NOT EXISTS ${CatalogName}.${SchemaName}.nation AS SELECT * FROM samples.tpch.nation;</stringProp>
+          <stringProp name="query">CREATE TABLE IF NOT EXISTS ${Catalog}.${Schema}.nation AS SELECT * FROM samples.tpch.nation;</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
           <stringProp name="variableNames"></stringProp>
@@ -230,10 +220,10 @@
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Drop primary key - orders">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Drop PK - orders">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">ALTER TABLE ${CatalogName}.${SchemaName}.orders DROP PRIMARY KEY IF EXISTS;
+          <stringProp name="query">ALTER TABLE ${Catalog}.${Schema}.orders DROP PRIMARY KEY IF EXISTS;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -244,10 +234,10 @@
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Drop primary key - part">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Drop PK - part">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">ALTER TABLE ${CatalogName}.${SchemaName}.part DROP PRIMARY KEY IF EXISTS;
+          <stringProp name="query">ALTER TABLE ${Catalog}.${Schema}.part DROP PRIMARY KEY IF EXISTS;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -258,10 +248,10 @@
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Drop primary key - supplier">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Drop PK - supplier">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">ALTER TABLE ${CatalogName}.${SchemaName}.supplier DROP PRIMARY KEY IF EXISTS;
+          <stringProp name="query">ALTER TABLE ${Catalog}.${Schema}.supplier DROP PRIMARY KEY IF EXISTS;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -272,10 +262,10 @@
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Drop primary key - customer">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Drop PK - customer">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">ALTER TABLE ${CatalogName}.${SchemaName}.customer DROP PRIMARY KEY IF EXISTS;
+          <stringProp name="query">ALTER TABLE ${Catalog}.${Schema}.customer DROP PRIMARY KEY IF EXISTS;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -286,10 +276,10 @@
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Drop primary key - region">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Drop PK - region">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">ALTER TABLE ${CatalogName}.${SchemaName}.region DROP PRIMARY KEY IF EXISTS;
+          <stringProp name="query">ALTER TABLE ${Catalog}.${Schema}.region DROP PRIMARY KEY IF EXISTS;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -300,10 +290,10 @@
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Drop primary key - nation">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Drop PK - nation">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">ALTER TABLE ${CatalogName}.${SchemaName}.nation DROP PRIMARY KEY IF EXISTS;
+          <stringProp name="query">ALTER TABLE ${Catalog}.${Schema}.nation DROP PRIMARY KEY IF EXISTS;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -317,7 +307,7 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Cache lineitem">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">CACHE SELECT * from ${CatalogName}.${SchemaName}.lineitem;</stringProp>
+          <stringProp name="query">CACHE SELECT * from ${Catalog}.${Schema}.lineitem;</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
           <stringProp name="variableNames"></stringProp>
@@ -330,7 +320,7 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Cache orders">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">CACHE SELECT * from ${CatalogName}.${SchemaName}.orders;</stringProp>
+          <stringProp name="query">CACHE SELECT * from ${Catalog}.${Schema}.orders;</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
           <stringProp name="variableNames"></stringProp>
@@ -343,7 +333,7 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Cache part">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">CACHE SELECT * from ${CatalogName}.${SchemaName}.part;</stringProp>
+          <stringProp name="query">CACHE SELECT * from ${Catalog}.${Schema}.part;</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
           <stringProp name="variableNames"></stringProp>
@@ -356,7 +346,7 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Cache supplier">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">CACHE SELECT * from ${CatalogName}.${SchemaName}.supplier;</stringProp>
+          <stringProp name="query">CACHE SELECT * from ${Catalog}.${Schema}.supplier;</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
           <stringProp name="variableNames"></stringProp>
@@ -369,7 +359,7 @@
         <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Cache customer">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">CACHE SELECT * from ${CatalogName}.${SchemaName}.customer;</stringProp>
+          <stringProp name="query">CACHE SELECT * from ${Catalog}.${Schema}.customer;</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
           <stringProp name="variableNames"></stringProp>
@@ -380,7 +370,7 @@
         </JDBCSampler>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group - No primary keys">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group - No PKs">
         <stringProp name="ThreadGroup.num_threads">${NumThreads}</stringProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -391,17 +381,17 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Sample query - No primary keys">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Sample query - No PKs">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Select Statement</stringProp>
           <stringProp name="query">select sum(l_quantity)
-from ${CatalogName}.tpch.lineitem
-    left join ${CatalogName}.${SchemaName}.orders   on l_orderkey=o_orderkey
-    left join ${CatalogName}.${SchemaName}.part     on l_partkey=p_partkey
-    left join ${CatalogName}.${SchemaName}.supplier on l_suppkey=s_suppkey
-    left join ${CatalogName}.${SchemaName}.customer on o_custkey=c_custkey
-    left join ${CatalogName}.${SchemaName}.nation   on c_nationkey=n_nationkey
-    left join ${CatalogName}.${SchemaName}.region   on n_regionkey=r_regionkey
+from ${Catalog}.${Schema}.lineitem
+    left join ${Catalog}.${Schema}.orders   on l_orderkey=o_orderkey
+    left join ${Catalog}.${Schema}.part     on l_partkey=p_partkey
+    left join ${Catalog}.${Schema}.supplier on l_suppkey=s_suppkey
+    left join ${Catalog}.${Schema}.customer on o_custkey=c_custkey
+    left join ${Catalog}.${Schema}.nation   on c_nationkey=n_nationkey
+    left join ${Catalog}.${Schema}.region   on n_regionkey=r_regionkey
 ;</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -411,6 +401,43 @@ from ${CatalogName}.tpch.lineitem
           <stringProp name="resultSetMaxRows"></stringProp>
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
+        <hashTree/>
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
         <hashTree/>
       </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Create primary keys">
@@ -424,10 +451,10 @@ from ${CatalogName}.tpch.lineitem
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create primary keys - part">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Set NOT NULL - part">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">ALTER TABLE ${CatalogName}.${SchemaName}.part ALTER COLUMN p_partkey SET NOT NULL;
+          <stringProp name="query">ALTER TABLE ${Catalog}.${Schema}.part ALTER COLUMN p_partkey SET NOT NULL;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -438,10 +465,10 @@ from ${CatalogName}.tpch.lineitem
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create primary keys - part 2">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create PK - part">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">ALTER TABLE ${CatalogName}.${SchemaName}.part ADD PRIMARY KEY (p_partkey) RELY;
+          <stringProp name="query">ALTER TABLE ${Catalog}.${Schema}.part ADD PRIMARY KEY (p_partkey) RELY;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -452,10 +479,10 @@ from ${CatalogName}.tpch.lineitem
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create primary keys - supplier">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Set NOT NULL - supplier">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">ALTER TABLE ${CatalogName}.${SchemaName}.supplier ALTER COLUMN s_suppkey SET NOT NULL;
+          <stringProp name="query">ALTER TABLE ${Catalog}.${Schema}.supplier ALTER COLUMN s_suppkey SET NOT NULL;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -466,10 +493,10 @@ from ${CatalogName}.tpch.lineitem
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create primary keys - supplier 2">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create PK - supplier">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">ALTER TABLE ${CatalogName}.${SchemaName}.supplier ADD PRIMARY KEY (s_suppkey) RELY;
+          <stringProp name="query">ALTER TABLE ${Catalog}.${Schema}.supplier ADD PRIMARY KEY (s_suppkey) RELY;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -480,10 +507,10 @@ from ${CatalogName}.tpch.lineitem
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create primary keys - customer">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Set NOT NULL - customer">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">ALTER TABLE ${CatalogName}.${SchemaName}.customer ALTER COLUMN c_custkey SET NOT NULL;
+          <stringProp name="query">ALTER TABLE ${Catalog}.${Schema}.customer ALTER COLUMN c_custkey SET NOT NULL;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -494,10 +521,10 @@ from ${CatalogName}.tpch.lineitem
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create primary keys - customer 2">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create PK - customer">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">ALTER TABLE ${CatalogName}.${SchemaName}.customer ADD PRIMARY KEY (c_custkey) RELY;
+          <stringProp name="query">ALTER TABLE ${Catalog}.${Schema}.customer ADD PRIMARY KEY (c_custkey) RELY;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -508,10 +535,10 @@ from ${CatalogName}.tpch.lineitem
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create primary keys - nation">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Set NOT NULL - nation">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">ALTER TABLE ${CatalogName}.${SchemaName}.nation ALTER COLUMN n_nationkey SET NOT NULL;</stringProp>
+          <stringProp name="query">ALTER TABLE ${Catalog}.${Schema}.nation ALTER COLUMN n_nationkey SET NOT NULL;</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
           <stringProp name="variableNames"></stringProp>
@@ -521,10 +548,10 @@ from ${CatalogName}.tpch.lineitem
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create primary keys - nation 2">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create PK - nation">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">ALTER TABLE ${CatalogName}.${SchemaName}.nation ADD PRIMARY KEY (n_nationkey) RELY;
+          <stringProp name="query">ALTER TABLE ${Catalog}.${Schema}.nation ADD PRIMARY KEY (n_nationkey) RELY;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -535,10 +562,10 @@ from ${CatalogName}.tpch.lineitem
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create primary keys - region">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Set NOT NULL - region">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">ALTER TABLE ${CatalogName}.${SchemaName}.region ALTER COLUMN r_regionkey SET NOT NULL;
+          <stringProp name="query">ALTER TABLE ${Catalog}.${Schema}.region ALTER COLUMN r_regionkey SET NOT NULL;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -549,10 +576,10 @@ from ${CatalogName}.tpch.lineitem
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create primary keys - region 2">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create PK - region">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">ALTER TABLE ${CatalogName}.${SchemaName}.region ADD PRIMARY KEY (r_regionkey) RELY;
+          <stringProp name="query">ALTER TABLE ${Catalog}.${Schema}.region ADD PRIMARY KEY (r_regionkey) RELY;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -563,10 +590,10 @@ from ${CatalogName}.tpch.lineitem
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create primary keys - orders">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Set NOT NULL - orders">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">ALTER TABLE ${CatalogName}.${SchemaName}.orders ALTER COLUMN o_orderkey SET NOT NULL;
+          <stringProp name="query">ALTER TABLE ${Catalog}.${Schema}.orders ALTER COLUMN o_orderkey SET NOT NULL;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -577,10 +604,10 @@ from ${CatalogName}.tpch.lineitem
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create primary keys - orders 2">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Create PK - orders">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">ALTER TABLE ${CatalogName}.${SchemaName}.orders ADD PRIMARY KEY (o_orderkey) RELY;</stringProp>
+          <stringProp name="query">ALTER TABLE ${Catalog}.${Schema}.orders ADD PRIMARY KEY (o_orderkey) RELY;</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
           <stringProp name="variableNames"></stringProp>
@@ -591,7 +618,7 @@ from ${CatalogName}.tpch.lineitem
         </JDBCSampler>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group - Primary keys rely">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group - PK RELY">
         <stringProp name="ThreadGroup.num_threads">${NumThreads}</stringProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -602,17 +629,17 @@ from ${CatalogName}.tpch.lineitem
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Sample query -  Primary keys rely">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Sample query -  PK RELY">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Select Statement</stringProp>
           <stringProp name="query">select sum(l_quantity)
-from ${CatalogName}.tpch.lineitem
-    left join ${CatalogName}.${SchemaName}.orders   on l_orderkey=o_orderkey
-    left join ${CatalogName}.${SchemaName}.part     on l_partkey=p_partkey
-    left join ${CatalogName}.${SchemaName}.supplier on l_suppkey=s_suppkey
-    left join ${CatalogName}.${SchemaName}.customer on o_custkey=c_custkey
-    left join ${CatalogName}.${SchemaName}.nation   on c_nationkey=n_nationkey
-    left join ${CatalogName}.${SchemaName}.region   on n_regionkey=r_regionkey
+from ${Catalog}.${Schema}.lineitem
+    left join ${Catalog}.${Schema}.orders   on l_orderkey=o_orderkey
+    left join ${Catalog}.${Schema}.part     on l_partkey=p_partkey
+    left join ${Catalog}.${Schema}.supplier on l_suppkey=s_suppkey
+    left join ${Catalog}.${Schema}.customer on o_custkey=c_custkey
+    left join ${Catalog}.${Schema}.nation   on c_nationkey=n_nationkey
+    left join ${Catalog}.${Schema}.region   on n_regionkey=r_regionkey
 ;</stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -623,8 +650,45 @@ from ${CatalogName}.tpch.lineitem
           <stringProp name="resultSetHandler">Store as String</stringProp>
         </JDBCSampler>
         <hashTree/>
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
       </hashTree>
-      <PostThreadGroup guiclass="PostThreadGroupGui" testclass="PostThreadGroup" testname="tearDown Thread Group">
+      <PostThreadGroup guiclass="PostThreadGroupGui" testclass="PostThreadGroup" testname="tearDown Thread Group" enabled="true">
         <stringProp name="TestPlan.comments">Clean up test dataset</stringProp>
         <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
@@ -636,10 +700,10 @@ from ${CatalogName}.tpch.lineitem
         </elementProp>
       </PostThreadGroup>
       <hashTree>
-        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Delete test dataset">
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Delete test dataset" enabled="false">
           <stringProp name="dataSource">dbsql</stringProp>
           <stringProp name="queryType">Callable Statement</stringProp>
-          <stringProp name="query">DROP CATALOG IF EXISTS ${CatalogName} CASCADE;
+          <stringProp name="query">DROP CATALOG IF EXISTS ${Catalog} CASCADE;
 </stringProp>
           <stringProp name="queryArguments"></stringProp>
           <stringProp name="queryArgumentsTypes"></stringProp>
@@ -652,43 +716,6 @@ from ${CatalogName}.tpch.lineitem
         <hashTree/>
       </hashTree>
       <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
-        <boolProp name="ResultCollector.error_logging">false</boolProp>
-        <objProp>
-          <name>saveConfig</name>
-          <value class="SampleSaveConfiguration">
-            <time>true</time>
-            <latency>true</latency>
-            <timestamp>true</timestamp>
-            <success>true</success>
-            <label>true</label>
-            <code>true</code>
-            <message>true</message>
-            <threadName>true</threadName>
-            <dataType>true</dataType>
-            <encoding>false</encoding>
-            <assertions>true</assertions>
-            <subresults>true</subresults>
-            <responseData>false</responseData>
-            <samplerData>false</samplerData>
-            <xml>false</xml>
-            <fieldNames>true</fieldNames>
-            <responseHeaders>false</responseHeaders>
-            <requestHeaders>false</requestHeaders>
-            <responseDataOnError>false</responseDataOnError>
-            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
-            <assertionsResultsToSave>0</assertionsResultsToSave>
-            <bytes>true</bytes>
-            <sentBytes>true</sentBytes>
-            <url>true</url>
-            <threadCounts>true</threadCounts>
-            <idleTime>true</idleTime>
-            <connectTime>true</connectTime>
-          </value>
-        </objProp>
-        <stringProp name="filename"></stringProp>
-      </ResultCollector>
-      <hashTree/>
-      <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
