@@ -42,4 +42,5 @@ In order to configure JMeter test plans to use your Databricks environment adjus
 - [Expert Configuration](2.%20Sample%20Test%20Plans/Expert%20Configuration/)
 3. [QRC - Query Result Cache](3.%20QRC/)
 4. [Remote QRC - Remote Query Result Cache](4.%20Remote%20QRC/)
+5. [Query optimization using PK constraints](5.%20Query%20optimization%20using%20PK/)
 
