@@ -37,10 +37,15 @@ In order to configure JMeter test plans to use your Databricks environment adjus
 ## List of demos
 1. [Disk Cache](1.%20Disk%20Cache/)
 2. [Sample Test Plans](2.%20Sample%20Test%20Plans/)
-- [Basic Configuration](2.%20Sample%20Test%20Plans/Basic%20Configuration/)
-- [Advanced Configuration](2.%20Sample%20Test%20Plans/Advanced%20Configuration/)
-- [Expert Configuration](2.%20Sample%20Test%20Plans/Expert%20Configuration/)
+    - [Basic Configuration](2.%20Sample%20Test%20Plans/Basic%20Configuration/)
+    - [Advanced Configuration](2.%20Sample%20Test%20Plans/Advanced%20Configuration/)
+    - [Expert Configuration](2.%20Sample%20Test%20Plans/Expert%20Configuration/)
 3. [QRC - Query Result Cache](3.%20QRC/)
 4. [Remote QRC - Remote Query Result Cache](4.%20Remote%20QRC/)
 5. [Query optimization using PK constraints](5.%20Query%20optimization%20using%20PK/)
+6. [Predictive I/O](6.%20Predictive%20IO/)
+    - [Scan Filter Pushdown](6.%20Predictive%20IO/6.1.%20Scan%20Filter%20Pushdown/)
+    - [Stats Filtering](6.%20Predictive%20IO/6.2.%20Stats%20Filtering/)
+    - [Lazy Materialization](6.%20Predictive%20IO/6.3.%20Lazy%20Materialization/)
+    - [Dictionary Filtering](6.%20Predictive%20IO/6.4.%20Dictionary%20Filtering/)
 
