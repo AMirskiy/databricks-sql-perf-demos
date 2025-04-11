@@ -1,9 +1,9 @@
 **/.DS_Store
 
-*.log
-*.lnk
-*.jar
-*.csv
+**.log
+**.lnk
+**.jar
+**.csv
 
 **/user-dev.properties
 **/** dev.sh
